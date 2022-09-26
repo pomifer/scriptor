@@ -69,7 +69,7 @@ func main() {
 				return err
 			}
 
-			rpcClient, err := client.NewClientFromNode("tcp://159.203.75.227:26657")
+			rpcClient, err := client.NewClientFromNode("tcp://65.108.196.173:26657")
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -94,7 +94,7 @@ func main() {
 		},
 	}
 
-	rootCmd.PersistentFlags().String(flags.FlagNode, "tcp://159.203.75.227:26657", "")
+	rootCmd.PersistentFlags().String(flags.FlagNode, "tcp://65.108.196.173:26657", "")
 	rootCmd.PersistentFlags().String(flags.FlagChainID, "osmosis-1", "")
 
 	rootCmd.PersistentFlags().String(flags.FlagHome, defaultKeyHome, "The application home directory")

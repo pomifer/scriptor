@@ -2,7 +2,9 @@ package history
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -29,11 +31,6 @@ func BlockSummaryCmd() *cobra.Command {
 				return err
 			}
 
-			// valMap, err := queryValidators(cmd.Context(), cctx)
-			// if err != nil {
-			// 	return err
-			// }
-
 			// summaries := []BlockSummary{}
 			for i := start; i < end; i++ {
 				// res, err := cctx.Client.Block(cmd.Context(), &i)
@@ -41,20 +38,48 @@ func BlockSummaryCmd() *cobra.Command {
 				// 	return err
 				// }
 				fmt.Println("------------------------------------------------------------------------", i)
-				res, err := cctx.Client.BlockResults(cmd.Context(), &i)
+				res, err := cctx.Client.Block(cmd.Context(), &i)
 				if err != nil {
 					return err
 				}
 
-				for j, txRes := range res.TxsResults {
+				delegateMap := make(map[string]sdk.Coin)
+
+				for j, tx := range res.Block.Txs {
 					fmt.Println("###########################", j)
-					fmt.Println(txRes.Code, txRes.Codespace)
-					for _, ev := range txRes.Events {
-						if ev.Type == "update_client" {
-							continue
-						}
-						fmt.Println("\t", ev.Type, "---", ConsolidateAttributes(ev.Attributes))
+					stx, err := cctx.TxConfig.TxDecoder()(tx)
+					if err != nil {
+						return err
 					}
+
+					for _, msg := range stx.GetMsgs() {
+						if sdk.MsgTypeURL(msg) == "/cosmos.staking.v1beta1.MsgDelegate" {
+							delegateMsg := msg.(*stakingtypes.MsgDelegate)
+							if delegateMsg.ValidatorAddress == "osmovaloper1ls4kmz5v7ytwcqmmchkex970565j8q3d5s6gdw" {
+								currentAmount := delegateMap[delegateMsg.DelegatorAddress]
+								currentAmount = currentAmount.Add(delegateMsg.Amount)
+								delegateMap[delegateMsg.DelegatorAddress] = currentAmount
+							}
+						}
+					}
+				}
+
+				// rawJson, err := json.MarshalIndent(delegateMap, "", "  ")
+				// if err != nil {
+				// 	return err
+				// }
+
+				file, err := os.OpenFile("delegateMap-sept-25.json", os.O_RDWR|os.O_CREATE, 0644)
+				if err != nil {
+					return err
+				}
+				defer file.Close()
+
+				enc := json.NewEncoder(file)
+
+				err = enc.Encode(delegateMap)
+				if err != nil {
+					return err
 				}
 
 				// valAddr, err := sdk.ConsAddressFromHex(res.Block.ProposerAddress.String())
