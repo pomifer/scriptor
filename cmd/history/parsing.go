@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	gammtypes "github.com/osmosis-labs/osmosis/v9/x/gamm/types"
+	gammtypes "github.com/osmosis-labs/osmosis/v11/x/gamm/types"
 )
 
 type Tx struct {

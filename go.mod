@@ -3,15 +3,15 @@ module github.com/pomifer/scriptor
 go 1.18
 
 require (
-	github.com/cosmos/cosmos-sdk v0.46.0-beta2.0.20220418184507-c53157dd63f6
-	github.com/osmosis-labs/osmosis/v9 v9.0.0
+	github.com/cosmos/cosmos-sdk v0.46.0
+	github.com/osmosis-labs/osmosis/v11 v11.0.1
 	github.com/spf13/cobra v1.4.0
 	github.com/tendermint/tendermint v0.35.4
 	google.golang.org/grpc v1.46.2
 )
 
 require (
-	github.com/CosmWasm/wasmd v0.24.0 // indirect
+	github.com/CosmWasm/wasmd v0.27.0 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.18.0 // indirect
 	github.com/cosmos/ibc-go/v3 v3.0.0 // indirect
@@ -32,7 +32,7 @@ require (
 	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/tendermint/tm-db v0.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
@@ -102,10 +102,10 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.12.2 // indirect
+	github.com/prometheus/client_golang v1.13.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
-	github.com/prometheus/common v0.33.0 // indirect
-	github.com/prometheus/procfs v0.7.3 // indirect
+	github.com/prometheus/common v0.37.0 // indirect
+	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/rs/zerolog v1.26.1 // indirect
@@ -120,6 +120,7 @@ require (
 	github.com/zondax/hid v0.9.1-0.20220302062450-5552068d2266 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
+	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2 // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171 // indirect
@@ -139,7 +140,7 @@ replace (
 	github.com/cosmos/ibc-go/v3 => github.com/cosmos/ibc-go/v3 v3.0.0
 	// use cosmos-compatible protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/osmosis-labs/osmosis/ => github.com/osmosis-labs/osmosis/v9 v9.0.0
+	github.com/osmosis-labs/osmosis/ => github.com/osmosis-labs/osmosis/v11 v11.0.1
 
 	github.com/tendermint/tendermint => github.com/tendermint/tendermint v0.34.19
 	// use grpc compatible with cosmos protobufs

@@ -3,6 +3,7 @@ package history
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -10,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/spf13/cobra"
+	abcitypes "github.com/tendermint/tendermint/abci/types"
 )
 
 func BlockSummaryCmd() *cobra.Command {
@@ -27,45 +29,61 @@ func BlockSummaryCmd() *cobra.Command {
 				return err
 			}
 
-			valMap, err := queryValidators(cmd.Context(), cctx)
-			if err != nil {
-				return err
-			}
+			// valMap, err := queryValidators(cmd.Context(), cctx)
+			// if err != nil {
+			// 	return err
+			// }
 
 			// summaries := []BlockSummary{}
 			for i := start; i < end; i++ {
-				res, err := cctx.Client.Block(cmd.Context(), &i)
+				// res, err := cctx.Client.Block(cmd.Context(), &i)
+				// if err != nil {
+				// 	return err
+				// }
+				fmt.Println("------------------------------------------------------------------------", i)
+				res, err := cctx.Client.BlockResults(cmd.Context(), &i)
 				if err != nil {
 					return err
 				}
 
-				valAddr, err := sdk.ConsAddressFromHex(res.Block.ProposerAddress.String())
-				if err != nil {
-					return err
-				}
-
-				valName, has := valMap[valAddr.String()]
-				if !has {
-					valName = valAddr.String()
-				}
-
-				bs := BlockSummary{
-					Height:   res.Block.Height,
-					Proposer: valName,
-					Time:     res.Block.Time,
-				}
-
-				decoder := cctx.TxConfig.TxDecoder()
-				for _, rawtx := range res.Block.Data.Txs {
-					sdkTx, err := decoder(rawtx)
-					if err != nil {
-						return err
+				for j, txRes := range res.TxsResults {
+					fmt.Println("###########################", j)
+					fmt.Println(txRes.Code, txRes.Codespace)
+					for _, ev := range txRes.Events {
+						if ev.Type == "update_client" {
+							continue
+						}
+						fmt.Println("\t", ev.Type, "---", ConsolidateAttributes(ev.Attributes))
 					}
-					tx := ParseTx(sdkTx)
-					bs.Txs = append(bs.Txs, tx)
 				}
 
-				fmt.Println(bs.String())
+				// valAddr, err := sdk.ConsAddressFromHex(res.Block.ProposerAddress.String())
+				// if err != nil {
+				// 	return err
+				// }
+
+				// valName, has := valMap[valAddr.String()]
+				// if !has {
+				// 	valName = valAddr.String()
+				// }
+
+				// bs := BlockSummary{
+				// 	Height:   res.Block.Height,
+				// 	Proposer: valName,
+				// 	Time:     res.Block.Time,
+				// }
+
+				// decoder := cctx.TxConfig.TxDecoder()
+				// for _, rawtx := range res.Block.Data.Txs {
+				// 	sdkTx, err := decoder(rawtx)
+				// 	if err != nil {
+				// 		return err
+				// 	}
+				// 	tx := ParseTx(sdkTx)
+				// 	bs.Txs = append(bs.Txs, tx)
+				// }
+
+				// fmt.Println(bs.String())
 			}
 
 			return nil
@@ -73,6 +91,15 @@ func BlockSummaryCmd() *cobra.Command {
 	}
 
 	return command
+}
+
+func ConsolidateAttributes(events []abcitypes.EventAttribute) string {
+	out := []string{}
+	for _, ev := range events {
+		out = append(out, string(ev.Key))
+		out = append(out, string(ev.Value))
+	}
+	return strings.Join(out, " ")
 }
 
 // returns a map of all the validators where proposer address:name

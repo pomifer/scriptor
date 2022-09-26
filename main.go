@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/osmosis-labs/osmosis/v9/app"
+	"github.com/osmosis-labs/osmosis/v11/app"
 	"github.com/pomifer/scriptor/cmd/history"
 	"github.com/tendermint/tendermint/libs/cli"
 	"google.golang.org/grpc"
